@@ -13,8 +13,11 @@ import { LoginUserDto } from 'src/dtos/login-user.dto';
 
 @Injectable()
 export class UsersService {
-  @InjectRepository(User) private readonly userRepository: Repository<User>;
-  private readonly jwtService: JwtService;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   // Creates new user from DTO and saves to database
   public async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -33,6 +36,7 @@ export class UsersService {
     }
   }
 
+  // Function to login a user and return access token
   async loginUser(loginUserDto: LoginUserDto): Promise<string> {
     const email = loginUserDto.email;
     const user = await this.userRepository.findOne({ where: { email } });
