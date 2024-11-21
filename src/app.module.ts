@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { FxplModule } from './fxpl/fxpl.module';
+import { FxqlModule } from './fxpl/fxql.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -19,6 +19,10 @@ import { JwtModule } from '@nestjs/jwt';
       database: process.env.DB_NAME || 'fxpl',
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production', // Only true in development
+      url: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+      ssl: {
+        rejectUnauthorized: false, // Required for Render's Postgres
+      },
     }),
     JwtModule.register({
       global: true,
@@ -26,7 +30,7 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '1h' },
     }),
     UsersModule,
-    FxplModule,
+    FxqlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
